@@ -7,8 +7,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap'
 }).addTo(map);
 
-let geojsonLayer;
-let marker;
+let geojsonLayer = null;
+let marker = null;
 
 // =====================
 // Colores por día
@@ -21,13 +21,6 @@ const colores = {
   'VI': '#e31a1c',
   'SA': '#6a3d9a'
 };
-// 🔴 TEST BÁSICO DE POPUP (no borrar hasta que funcione)
-setTimeout(() => {
-  L.popup()
-    .setLatLng([-43.2489, -65.3051]) // centro de Trelew
-    .setContent("🔥 Popup de prueba")
-    .openOn(map);
-}, 1000);
 
 // =====================
 // Estilo de polígonos
@@ -47,14 +40,16 @@ function estilo(feature) {
 // Cargar GeoJSON
 // =====================
 fetch('SECOASHEdit.geojson')
-  .then(response => response.json())
+  .then(res => res.json())
   .then(data => {
     geojsonLayer = L.geoJSON(data, {
       style: estilo
     }).addTo(map);
+
+    console.log('GeoJSON cargado');
   })
-  .catch(error => {
-    console.error('Error cargando el GeoJSON:', error);
+  .catch(err => {
+    console.error('Error cargando GeoJSON:', err);
   });
 
 // =====================
@@ -64,32 +59,38 @@ function buscarDireccion() {
   const direccion = document.getElementById('direccion').value;
   if (!direccion) return;
 
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-    direccion + ', Trelew, Chubut, Argentina'
-  )}`;
+  const url =
+    'https://nominatim.openstreetmap.org/search?format=json&q=' +
+    encodeURIComponent(direccion + ', Trelew, Chubut, Argentina');
 
   fetch(url)
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
-      if (data.length === 0) {
-        document.getElementById('resultado').innerText =
-          'Dirección no encontrada.';
+      if (!data || data.length === 0) {
+        mostrarResultado(
+          'Dirección no encontrada',
+          null,
+          null
+        );
         return;
       }
 
       const lat = parseFloat(data[0].lat);
       const lon = parseFloat(data[0].lon);
 
-      // Quitar marcador anterior
+      // Quitar marcador previo
       if (marker) {
         map.removeLayer(marker);
       }
 
-      // Crear nuevo marcador
+      // Nuevo marcador
       marker = L.marker([lat, lon]).addTo(map);
       map.setView([lat, lon], 15);
 
       evaluarZona(lat, lon);
+    })
+    .catch(err => {
+      console.error('Error geocodificando:', err);
     });
 }
 
@@ -97,7 +98,14 @@ function buscarDireccion() {
 // Evaluar punto en polígono
 // =====================
 function evaluarZona(lat, lon) {
-  if (!geojsonLayer) return;
+  if (!geojsonLayer) {
+    mostrarResultado(
+      'Las zonas todavía no cargaron',
+      lat,
+      lon
+    );
+    return;
+  }
 
   const punto = turf.point([lon, lat]);
   let encontrado = false;
@@ -108,43 +116,36 @@ function evaluarZona(lat, lon) {
     if (turf.booleanPointInPolygon(punto, poligono)) {
       const dia = poligono.properties.dia;
 
-      const texto = `🗓️ Día de recolección: <strong>${dia}</strong>`;
+      const texto =
+        '🗓️ <strong>Día de recolección:</strong> ' + dia;
 
-      // Recuadro inferior
-      document.getElementById('resultado').innerHTML = texto;
-
-      // 🔥 Popup explícito (ultra confiable)
-      L.popup({ closeButton: true })
-        .setLatLng([lat, lon])
-        .setContent(texto)
-        .openOn(map);
-
+      mostrarResultado(texto, lat, lon);
       encontrado = true;
     }
   });
 
   if (!encontrado) {
-    const texto =
-      'La dirección no se encuentra dentro de una zona de recolección.';
+    mostrarResultado(
+      'La dirección no se encuentra dentro de una zona de recolección.',
+      lat,
+      lon
+    );
+  }
+}
 
-    document.getElementById('resultado').innerText = texto;
+// =====================
+// Mostrar resultado (popup + recuadro)
+// =====================
+function mostrarResultado(texto, lat, lon) {
+  // Recuadro inferior
+  document.getElementById('resultado').innerHTML = texto;
 
+  // Popup (solo si hay coordenadas)
+  if (lat !== null && lon !== null) {
     L.popup({ closeButton: true })
       .setLatLng([lat, lon])
       .setContent(texto)
       .openOn(map);
-  }
-}
-
-  });
-
-  if (!encontrado) {
-    const texto = 'La dirección no se encuentra dentro de una zona de recolección.';
-    document.getElementById('resultado').innerText = texto;
-
-    marker
-      .bindPopup(texto)
-      .openPopup();
   }
 }
 
