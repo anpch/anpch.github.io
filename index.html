@@ -4,47 +4,51 @@
   <meta charset="utf-8" />
   <title>Recolección de Residuos Secos – Trelew</title>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
     #topbar {
       padding: 10px;
       background: #f2f2f2;
       display: flex;
       gap: 10px;
     }
+
     #direccion {
       flex: 1;
       padding: 6px;
+      font-size: 14px;
     }
+
+    button {
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
     #map {
-      height: calc(100vh - 60px);
+      height: calc(100vh - 110px);
     }
+
     #resultado {
-      padding: 10px;
-      background: #ffffff;
+      padding: 12px;
       font-size: 16px;
       border-top: 1px solid #ccc;
+      background: #ffffff;
     }
   </style>
 </head>
 <body>
 
   <div id="topbar">
-    <input id="direccion" type="text" placeholder="Ingrese una dirección en Trelew" />
-    <button onclick="buscarDireccion()">Buscar</button>
-  </div>
-
-  <div id="map"></div>
-  <div id="resultado">Ingrese una dirección para conocer el día de recolección.</div>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
-  <script src="app.js"></script>
-
-</body>
-</html>
+    <input

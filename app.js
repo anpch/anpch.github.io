@@ -1,5 +1,5 @@
 // =====================
-// Configuración inicial
+// Inicializar mapa
 // =====================
 const map = L.map('map').setView([-43.2489, -65.3051], 13);
 
@@ -11,17 +11,8 @@ let geojsonLayer;
 let marker;
 
 // =====================
-// Diccionarios
+// Colores por día
 // =====================
-const diasTexto = {
-  'LU': 'Lunes',
-  'MA': 'Martes',
-  'MI': 'Miércoles',
-  'JU': 'Jueves',
-  'VI': 'Viernes',
-  'SA': 'Sábado'
-};
-
 const colores = {
   'LU': '#1f78b4',
   'MA': '#33a02c',
@@ -35,48 +26,57 @@ const colores = {
 // Estilo de polígonos
 // =====================
 function estilo(feature) {
-  const dia = feature.properties.DIA; // ← ajustar si el campo se llama distinto
+  const dia = feature.properties.dia;
+
   return {
     color: '#555',
     weight: 1,
-    fillColor: colores[dia] || '#ccc',
+    fillColor: colores[dia] || '#cccccc',
     fillOpacity: 0.6
   };
 }
 
 // =====================
-// Cargar zonas
+// Cargar GeoJSON
 // =====================
 fetch('SECOASHEdit.geojson')
-  .then(res => res.json())
+  .then(response => response.json())
   .then(data => {
     geojsonLayer = L.geoJSON(data, {
       style: estilo
     }).addTo(map);
+  })
+  .catch(error => {
+    console.error('Error cargando el GeoJSON:', error);
   });
 
 // =====================
 // Buscar dirección
 // =====================
 function buscarDireccion() {
-  const dir = document.getElementById('direccion').value;
+  const direccion = document.getElementById('direccion').value;
 
-  if (!dir) return;
+  if (!direccion) return;
 
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(dir + ', Trelew, Chubut, Argentina')}`;
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+    direccion + ', Trelew, Chubut, Argentina'
+  )}`;
 
   fetch(url)
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
       if (data.length === 0) {
-        document.getElementById('resultado').innerText = 'Dirección no encontrada.';
+        document.getElementById('resultado').innerText =
+          'Dirección no encontrada.';
         return;
       }
 
       const lat = parseFloat(data[0].lat);
       const lon = parseFloat(data[0].lon);
 
-      if (marker) map.removeLayer(marker);
+      if (marker) {
+        map.removeLayer(marker);
+      }
 
       marker = L.marker([lat, lon]).addTo(map);
       map.setView([lat, lon], 15);
@@ -89,6 +89,8 @@ function buscarDireccion() {
 // Evaluar punto en polígono
 // =====================
 function evaluarZona(lat, lon) {
+  if (!geojsonLayer) return;
+
   const punto = turf.point([lon, lat]);
   let encontrado = false;
 
@@ -96,8 +98,7 @@ function evaluarZona(lat, lon) {
     const poligono = layer.toGeoJSON();
 
     if (turf.booleanPointInPolygon(punto, poligono)) {
-      const diaAbrev = poligono.properties.DIA;
-      const dia = diasTexto[diaAbrev] || diaAbrev;
+      const dia = poligono.properties.dia;
 
       document.getElementById('resultado').innerHTML =
         `🗓️ <strong>Día de recolección de residuos secos:</strong> ${dia}`;
