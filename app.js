@@ -55,7 +55,6 @@ fetch('SECOASHEdit.geojson')
 // =====================
 function buscarDireccion() {
   const direccion = document.getElementById('direccion').value;
-
   if (!direccion) return;
 
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
@@ -74,10 +73,12 @@ function buscarDireccion() {
       const lat = parseFloat(data[0].lat);
       const lon = parseFloat(data[0].lon);
 
+      // Quitar marcador anterior
       if (marker) {
         map.removeLayer(marker);
       }
 
+      // Crear nuevo marcador
       marker = L.marker([lat, lon]).addTo(map);
       map.setView([lat, lon], 15);
 
@@ -89,7 +90,7 @@ function buscarDireccion() {
 // Evaluar punto en polígono
 // =====================
 function evaluarZona(lat, lon) {
-  if (!geojsonLayer) return;
+  if (!geojsonLayer || !marker) return;
 
   const punto = turf.point([lon, lat]);
   let encontrado = false;
@@ -100,15 +101,27 @@ function evaluarZona(lat, lon) {
     if (turf.booleanPointInPolygon(punto, poligono)) {
       const dia = poligono.properties.dia;
 
-      document.getElementById('resultado').innerHTML =
-        `🗓️ <strong>Día de recolección de residuos secos:</strong> ${dia}`;
+      // Texto a mostrar
+      const texto = `🗓️ Día de recolección: <strong>${dia}</strong>`;
+
+      // Recuadro inferior
+      document.getElementById('resultado').innerHTML = texto;
+
+      // Popup en el pin
+      marker
+        .bindPopup(texto)
+        .openPopup();
 
       encontrado = true;
     }
   });
 
   if (!encontrado) {
-    document.getElementById('resultado').innerText =
-      'La dirección no se encuentra dentro de una zona de recolección.';
+    const texto = 'La dirección no se encuentra dentro de una zona de recolección.';
+    document.getElementById('resultado').innerText = texto;
+
+    marker
+      .bindPopup(texto)
+      .openPopup();
   }
 }
