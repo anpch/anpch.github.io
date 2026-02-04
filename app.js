@@ -90,7 +90,7 @@ function buscarDireccion() {
 // Evaluar punto en polígono
 // =====================
 function evaluarZona(lat, lon) {
-  if (!geojsonLayer || !marker) return;
+  if (!geojsonLayer) return;
 
   const punto = turf.point([lon, lat]);
   let encontrado = false;
@@ -101,19 +101,34 @@ function evaluarZona(lat, lon) {
     if (turf.booleanPointInPolygon(punto, poligono)) {
       const dia = poligono.properties.dia;
 
-      // Texto a mostrar
       const texto = `🗓️ Día de recolección: <strong>${dia}</strong>`;
 
       // Recuadro inferior
       document.getElementById('resultado').innerHTML = texto;
 
-      // Popup en el pin
-      marker
-        .bindPopup(texto)
-        .openPopup();
+      // 🔥 Popup explícito (ultra confiable)
+      L.popup({ closeButton: true })
+        .setLatLng([lat, lon])
+        .setContent(texto)
+        .openOn(map);
 
       encontrado = true;
     }
+  });
+
+  if (!encontrado) {
+    const texto =
+      'La dirección no se encuentra dentro de una zona de recolección.';
+
+    document.getElementById('resultado').innerText = texto;
+
+    L.popup({ closeButton: true })
+      .setLatLng([lat, lon])
+      .setContent(texto)
+      .openOn(map);
+  }
+}
+
   });
 
   if (!encontrado) {
@@ -125,3 +140,4 @@ function evaluarZona(lat, lon) {
       .openPopup();
   }
 }
+
