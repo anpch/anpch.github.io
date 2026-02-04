@@ -4,19 +4,26 @@
   <meta charset="utf-8" />
   <title>Recolección de Residuos Secos – Trelew</title>
 
+  <!-- Clave para móvil -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Leaflet -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
   <style>
+    /* Estructura general */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
+    /* Barra superior */
     #topbar {
       padding: 10px;
       background: #f2f2f2;
@@ -26,30 +33,34 @@
 
     #direccion {
       flex: 1;
-      padding: 6px;
-      font-size: 14px;
+      padding: 8px;
+      font-size: 15px;
     }
 
     button {
-      padding: 6px 12px;
-      font-size: 14px;
+      padding: 8px 14px;
+      font-size: 15px;
       cursor: pointer;
     }
 
+    /* Mapa ocupa el espacio disponible */
     #map {
-      height: calc(100vh - 110px);
+      flex: 1;
     }
 
+    /* Resultado siempre visible */
     #resultado {
       padding: 12px;
       font-size: 16px;
       border-top: 1px solid #ccc;
       background: #ffffff;
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
+  <!-- Barra de búsqueda -->
   <div id="topbar">
     <input
       id="direccion"
@@ -59,8 +70,10 @@
     <button onclick="buscarDireccion()">Buscar</button>
   </div>
 
+  <!-- Mapa -->
   <div id="map"></div>
 
+  <!-- Resultado -->
   <div id="resultado">
     Ingrese una dirección para conocer el día de recolección.
   </div>
@@ -69,7 +82,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
-  <!-- Código propio -->
+  <!-- Código JS -->
   <script src="app.js"></script>
 
 </body>
