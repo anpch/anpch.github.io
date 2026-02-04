@@ -1,398 +1,50 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="css/leaflet.css">
-        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
-        <style>
-        html, body, #map {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-        }
-        </style>
-        <title></title>
-    </head>
-    <body>
-        <div id="map">
-        </div>
-        <script src="js/qgis2web_expressions.js"></script>
-        <script src="js/leaflet.js"></script>
-        <script src="js/multi-style-layer.js"></script>
-        <script src="js/leaflet.rotatedMarker.js"></script>
-        <script src="js/leaflet.pattern.js"></script>
-        <script src="js/leaflet-hash.js"></script>
-        <script src="js/Autolinker.min.js"></script>
-        <script src="js/rbush.min.js"></script>
-        <script src="js/labelgun.min.js"></script>
-        <script src="js/labels.js"></script>
-        <script src="data/zonificaciondebrey_1.js"></script>
-        <script src="data/puntosleydebrey_2.js"></script>
-        <script src="data/parcelasinterseccion_3.js"></script>
-        <script src="data/zonificaciondebreysin12c_4.js"></script>
-        <script>
-        var map = L.map('map', {
-            zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[-42.991211482014094,-64.41591621608781],[-42.948692823808564,-64.32539509393823]]);
-        var hash = new L.Hash(map);
-        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
-        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
-        var bounds_group = new L.featureGroup([]);
-        function setBounds() {
-        }
-        map.createPane('pane_GoogleSatellite_0');
-        map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
-        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-            pane: 'pane_GoogleSatellite_0',
-            opacity: 1.0,
-            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
-            minZoom: 1,
-            maxZoom: 28,
-            minNativeZoom: 0,
-            maxNativeZoom: 20
-        });
-        layer_GoogleSatellite_0;
-        map.addLayer(layer_GoogleSatellite_0);
-        function pop_zonificaciondebrey_1(feature, layer) {
-            var popupContent = '<table>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['layer'] !== null ? autolinker.link(feature.properties['layer'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['path'] !== null ? autolinker.link(feature.properties['path'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['zona'] !== null ? autolinker.link(feature.properties['zona'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table>';
-            layer.bindPopup(popupContent, {maxHeight: 400});
-        }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Recolección de Residuos Secos – Trelew</title>
 
-        function style_zonificaciondebrey_1_0(feature) {
-            switch(String(feature.properties['zona'])) {
-                case 'Amortiguación':
-                    return {
-                pane: 'pane_zonificaciondebrey_1',
-                opacity: 1,
-                color: 'rgba(0,0,0,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(255,255,51,1.0)',
-                interactive: true,
-            }
-                    break;
-                case 'ANP':
-                    return {
-                pane: 'pane_zonificaciondebrey_1',
-                opacity: 1,
-                color: 'rgba(0,0,0,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(148,209,128,1.0)',
-                interactive: true,
-            }
-                    break;
-                default:
-                    return {
-                pane: 'pane_zonificaciondebrey_1',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(206,213,126,1.0)',
-                interactive: true,
-            }
-                    break;
-            }
-        }
-        map.createPane('pane_zonificaciondebrey_1');
-        map.getPane('pane_zonificaciondebrey_1').style.zIndex = 401;
-        map.getPane('pane_zonificaciondebrey_1').style['mix-blend-mode'] = 'normal';
-        var layer_zonificaciondebrey_1 = new L.geoJson(json_zonificaciondebrey_1, {
-            attribution: '',
-            interactive: true,
-            dataVar: 'json_zonificaciondebrey_1',
-            layerName: 'layer_zonificaciondebrey_1',
-            pane: 'pane_zonificaciondebrey_1',
-            onEachFeature: pop_zonificaciondebrey_1,
-            style: style_zonificaciondebrey_1_0,
-        });
-        bounds_group.addLayer(layer_zonificaciondebrey_1);
-        map.addLayer(layer_zonificaciondebrey_1);
-        function pop_puntosleydebrey_2(feature, layer) {
-            var popupContent = '<table>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['nombre'] !== null ? autolinker.link(feature.properties['nombre'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['nuevonom'] !== null ? autolinker.link(feature.properties['nuevonom'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['nuevonombr'] !== null ? autolinker.link(feature.properties['nuevonombr'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table>';
-            layer.bindPopup(popupContent, {maxHeight: 400});
-        }
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 
-        function style_puntosleydebrey_2_0() {
-            return {
-                pane: 'pane_puntosleydebrey_2',
-                radius: 6.0,
-                opacity: 1,
-                color: 'rgba(0,0,0,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(255,255,255,1.0)',
-                interactive: true,
-            }
-        }
-        map.createPane('pane_puntosleydebrey_2');
-        map.getPane('pane_puntosleydebrey_2').style.zIndex = 402;
-        map.getPane('pane_puntosleydebrey_2').style['mix-blend-mode'] = 'normal';
-        var layer_puntosleydebrey_2 = new L.geoJson(json_puntosleydebrey_2, {
-            attribution: '',
-            interactive: true,
-            dataVar: 'json_puntosleydebrey_2',
-            layerName: 'layer_puntosleydebrey_2',
-            pane: 'pane_puntosleydebrey_2',
-            onEachFeature: pop_puntosleydebrey_2,
-            pointToLayer: function (feature, latlng) {
-                var context = {
-                    feature: feature,
-                    variables: {}
-                };
-                return L.circleMarker(latlng, style_puntosleydebrey_2_0(feature));
-            },
-        });
-        bounds_group.addLayer(layer_puntosleydebrey_2);
-        map.addLayer(layer_puntosleydebrey_2);
-        function pop_parcelasinterseccion_3(feature, layer) {
-            var popupContent = '<table>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['CLASSID'] !== null ? autolinker.link(feature.properties['CLASSID'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['FEATID'] !== null ? autolinker.link(feature.properties['FEATID'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['DEP_DESCRI'] !== null ? autolinker.link(feature.properties['DEP_DESCRI'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['DEPARTAMEN'] !== null ? autolinker.link(feature.properties['DEPARTAMEN'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['SECCION'] !== null ? autolinker.link(feature.properties['SECCION'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['TIPO_DIVIS'] !== null ? autolinker.link(feature.properties['TIPO_DIVIS'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['DIVISION'] !== null ? autolinker.link(feature.properties['DIVISION'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['COLONIA'] !== null ? autolinker.link(feature.properties['COLONIA'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['PARCELA'] !== null ? autolinker.link(feature.properties['PARCELA'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['PARTIDA'] !== null ? autolinker.link(feature.properties['PARTIDA'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['TIPO_PARCE'] !== null ? autolinker.link(feature.properties['TIPO_PARCE'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['SUP_MENSUR'] !== null ? autolinker.link(feature.properties['SUP_MENSUR'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['NOMBRE_EST'] !== null ? autolinker.link(feature.properties['NOMBRE_EST'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['SUP_GEOMET'] !== null ? autolinker.link(feature.properties['SUP_GEOMET'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table>';
-            layer.bindPopup(popupContent, {maxHeight: 400});
-        }
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; }
+    #topbar {
+      padding: 10px;
+      background: #f2f2f2;
+      display: flex;
+      gap: 10px;
+    }
+    #direccion {
+      flex: 1;
+      padding: 6px;
+    }
+    #map {
+      height: calc(100vh - 60px);
+    }
+    #resultado {
+      padding: 10px;
+      background: #ffffff;
+      font-size: 16px;
+      border-top: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
 
-        var pattern_parcelasinterseccion_3_0 = new L.StripePattern({
-            weight: 0.3,
-            spaceWeight: 2.0,
-            color: '#000000',
-            opacity: 1.0,
-            spaceOpacity: 0,
-            angle: 315
-        });
-        pattern_parcelasinterseccion_3_0.addTo(map);
-        function style_parcelasinterseccion_3_0() {
-            return {
-                pane: 'pane_parcelasinterseccion_3',
-                stroke: false,
-                fillOpacity: 1,
-                fillPattern: pattern_parcelasinterseccion_3_0,
-                interactive: true,
-            }
-        }
-        function style_parcelasinterseccion_3_1() {
-            return {
-                pane: 'pane_parcelasinterseccion_3',
-                opacity: 1,
-                color: 'rgba(0,0,0,1.0)',
-                dashArray: '',
-                lineCap: 'square',
-                lineJoin: 'bevel',
-                weight: 2.0,
-                fillOpacity: 0,
-                interactive: true,
-            }
-        }
-        map.createPane('pane_parcelasinterseccion_3');
-        map.getPane('pane_parcelasinterseccion_3').style.zIndex = 403;
-        map.getPane('pane_parcelasinterseccion_3').style['mix-blend-mode'] = 'normal';
-        var layer_parcelasinterseccion_3 = new L.geoJson.multiStyle(json_parcelasinterseccion_3, {
-            attribution: '',
-            interactive: true,
-            dataVar: 'json_parcelasinterseccion_3',
-            layerName: 'layer_parcelasinterseccion_3',
-            pane: 'pane_parcelasinterseccion_3',
-            onEachFeature: pop_parcelasinterseccion_3,
-            styles: [style_parcelasinterseccion_3_0,style_parcelasinterseccion_3_1,]
-        });
-        bounds_group.addLayer(layer_parcelasinterseccion_3);
-        map.addLayer(layer_parcelasinterseccion_3);
-        function pop_zonificaciondebreysin12c_4(feature, layer) {
-            var popupContent = '<table>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['layer'] !== null ? autolinker.link(feature.properties['layer'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['path'] !== null ? autolinker.link(feature.properties['path'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['zona'] !== null ? autolinker.link(feature.properties['zona'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table>';
-            layer.bindPopup(popupContent, {maxHeight: 400});
-        }
+  <div id="topbar">
+    <input id="direccion" type="text" placeholder="Ingrese una dirección en Trelew" />
+    <button onclick="buscarDireccion()">Buscar</button>
+  </div>
 
-        function style_zonificaciondebreysin12c_4_0(feature) {
-            switch(String(feature.properties['zona'])) {
-                case 'Amortiguación':
-                    return {
-                pane: 'pane_zonificaciondebreysin12c_4',
-                opacity: 1,
-                color: 'rgba(0,0,0,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(255,255,51,1.0)',
-                interactive: true,
-            }
-                    break;
-                case 'ANP':
-                    return {
-                pane: 'pane_zonificaciondebreysin12c_4',
-                opacity: 1,
-                color: 'rgba(0,0,0,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(148,209,128,1.0)',
-                interactive: true,
-            }
-                    break;
-                default:
-                    return {
-                pane: 'pane_zonificaciondebreysin12c_4',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(206,213,126,1.0)',
-                interactive: true,
-            }
-                    break;
-            }
-        }
-        map.createPane('pane_zonificaciondebreysin12c_4');
-        map.getPane('pane_zonificaciondebreysin12c_4').style.zIndex = 404;
-        map.getPane('pane_zonificaciondebreysin12c_4').style['mix-blend-mode'] = 'normal';
-        var layer_zonificaciondebreysin12c_4 = new L.geoJson(json_zonificaciondebreysin12c_4, {
-            attribution: '',
-            interactive: true,
-            dataVar: 'json_zonificaciondebreysin12c_4',
-            layerName: 'layer_zonificaciondebreysin12c_4',
-            pane: 'pane_zonificaciondebreysin12c_4',
-            onEachFeature: pop_zonificaciondebreysin12c_4,
-            style: style_zonificaciondebreysin12c_4_0,
-        });
-        bounds_group.addLayer(layer_zonificaciondebreysin12c_4);
-        map.addLayer(layer_zonificaciondebreysin12c_4);
-        var baseMaps = {};
-        L.control.layers(baseMaps,{'zonificaciondebreysin12c<br /><table><tr><td style="text-align: center;"><img src="legend/zonificaciondebreysin12c_4_Amortiguación0.png" /></td><td>Amortiguación</td></tr><tr><td style="text-align: center;"><img src="legend/zonificaciondebreysin12c_4_ANP1.png" /></td><td>ANP</td></tr><tr><td style="text-align: center;"><img src="legend/zonificaciondebreysin12c_4_2.png" /></td><td></td></tr></table>': layer_zonificaciondebreysin12c_4,'<img src="legend/parcelasinterseccion_3.png" /> parcelasinterseccion': layer_parcelasinterseccion_3,'<img src="legend/puntosleydebrey_2.png" /> puntosleydebrey': layer_puntosleydebrey_2,'zonificaciondebrey<br /><table><tr><td style="text-align: center;"><img src="legend/zonificaciondebrey_1_Amortiguación0.png" /></td><td>Amortiguación</td></tr><tr><td style="text-align: center;"><img src="legend/zonificaciondebrey_1_ANP1.png" /></td><td>ANP</td></tr><tr><td style="text-align: center;"><img src="legend/zonificaciondebrey_1_2.png" /></td><td></td></tr></table>': layer_zonificaciondebrey_1,"Google Satellite": layer_GoogleSatellite_0,}).addTo(map);
-        setBounds();
-        var i = 0;
-        layer_puntosleydebrey_2.eachLayer(function(layer) {
-            var context = {
-                feature: layer.feature,
-                variables: {}
-            };
-            layer.bindTooltip((layer.feature.properties['nuevonombr'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['nuevonombr']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_puntosleydebrey_2'});
-            labels.push(layer);
-            totalMarkers += 1;
-              layer.added = true;
-              addLabel(layer, i);
-              i++;
-        });
-        resetLabels([layer_puntosleydebrey_2]);
-        map.on("zoomend", function(){
-            resetLabels([layer_puntosleydebrey_2]);
-        });
-        map.on("layeradd", function(){
-            resetLabels([layer_puntosleydebrey_2]);
-        });
-        map.on("layerremove", function(){
-            resetLabels([layer_puntosleydebrey_2]);
-        });
-        </script>
-    </body>
+  <div id="map"></div>
+  <div id="resultado">Ingrese una dirección para conocer el día de recolección.</div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+  <script src="app.js"></script>
+
+</body>
 </html>
