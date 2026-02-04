@@ -21,6 +21,13 @@ const colores = {
   'VI': '#e31a1c',
   'SA': '#6a3d9a'
 };
+// 🔴 TEST BÁSICO DE POPUP (no borrar hasta que funcione)
+setTimeout(() => {
+  L.popup()
+    .setLatLng([-43.2489, -65.3051]) // centro de Trelew
+    .setContent("🔥 Popup de prueba")
+    .openOn(map);
+}, 1000);
 
 // =====================
 // Estilo de polígonos
@@ -140,4 +147,5 @@ function evaluarZona(lat, lon) {
       .openPopup();
   }
 }
+
 
