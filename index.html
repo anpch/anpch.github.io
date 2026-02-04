@@ -52,3 +52,25 @@
 
   <div id="topbar">
     <input
+      id="direccion"
+      type="text"
+      placeholder="Ingrese una dirección en Trelew"
+    />
+    <button onclick="buscarDireccion()">Buscar</button>
+  </div>
+
+  <div id="map"></div>
+
+  <div id="resultado">
+    Ingrese una dirección para conocer el día de recolección.
+  </div>
+
+  <!-- Librerías -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+
+  <!-- Código propio -->
+  <script src="app.js"></script>
+
+</body>
+</html>
